@@ -34,6 +34,7 @@ public class CommandExecutor {
     // EXIT
     public void exit() {
         print("Завершаемся...");
+        scanner.close();
         System.exit(0);
     }
 
