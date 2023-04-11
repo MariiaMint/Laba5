@@ -8,7 +8,7 @@ import java.util.Scanner;
 import static managers.Printer.print;
 
 public class FileScanner {
-    public static ArrayList<String> fileScanner(String filepath){
+    public static ArrayList<String> scan(String filepath){
         ArrayList<String> script = new ArrayList<>();
         try{
             File file = new File(filepath);

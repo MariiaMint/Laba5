@@ -31,7 +31,6 @@ public class Main {
         while (true) {
             print("Введите команду (чтобы увидеть справку по командам введите help)");
             String command = scanner.nextLine();
-
             try {
                 String[] command_list = command.split(" ");
                 if (command_list.length == 1) {

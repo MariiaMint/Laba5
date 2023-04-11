@@ -29,7 +29,7 @@ public class Validator {
     public static boolean yesNo(Scanner scanner){
         String str = scanner.nextLine();
         boolean boo = true;
-        while (!(str.equalsIgnoreCase("yes") || str.equals("no"))) {
+        while (!(str.equalsIgnoreCase("yes") || str.equalsIgnoreCase("no"))) {
             print("Вам нужно ввести только yes или no");
             str = scanner.nextLine();
         }
@@ -49,11 +49,11 @@ public class Validator {
                     x = Double.parseDouble(strX);
                     break;
                 } catch (NumberFormatException e) {
-                    print("Введите число(нецелое вводить через точку)");
+                    print("Введите число с плавающей запятой");
                 }
             } else {
                 if (canBeNull && strX.isEmpty()){x = null; break;}
-                print("Ведите число(нецелое вводить через точку)");
+                print("Введите число с плавающей запятой");
             }
         }
         return x;

@@ -6,7 +6,7 @@ import beginningClasses.*;
 import comands.Command;
 import static beginningClasses.HumanBeing.*;
 import static managers.CommandManager.execute;
-import static managers.FileScanner.fileScanner;
+import static managers.FileScanner.scan;
 import static managers.Printer.print;
 import static managers.Validator.*;
 import static managers.Validator.etoDouble;
@@ -52,7 +52,7 @@ public class CommandExecutor {
             StringBuilder sb = new StringBuilder();
             // Append strings from array
             for (HumanBeing element : collection) {
-                sb.append(element.toString());
+                sb.append(element.toCSV());
             }
             fw.write(sb.toString());
             fw.close();
@@ -66,13 +66,16 @@ public class CommandExecutor {
     public void show(){
         print("id; name; coordinates; creationDate; realHero; hasToothpick; impactSpeed; weaponType; mood; carName; carCool");
         for (HumanBeing obj : collection){
-            System.out.print(obj.toString());
+            print(obj.toString());
         }
     }
 
     //remove_first
     public void removeFirst(){
-        collection.removeElementAt(0);
+        if (!collection.isEmpty()) {
+            collection.removeElementAt(0);
+        }
+        else {print("коллекция итак пуста");}
     }
 
     //clear
@@ -210,8 +213,9 @@ public class CommandExecutor {
         print("\tТип: Vector");
         print("\tКласс объектов: HumanBeing");
         print("\tКоличество элементов: " + collection.size());
-        print("\tВремя инициализации: " + collection.firstElement().creationDateToString());
-
+        if (!collection.isEmpty()) {
+            print("\tВремя инициализации: " + collection.firstElement().creationDateToString());
+        }
     }
 
     //sort
@@ -221,40 +225,56 @@ public class CommandExecutor {
 
     //print_descending
     public void printDescending(){
-        Vector<HumanBeing> vector = new Vector<>(collection);
-        Collections.sort(vector, new IdComparator());
-        print(vector.toString());
+        ArrayList<HumanBeing> list = new ArrayList<>(collection);
+        list.sort(new HumanComparator());
+        Collections.reverse(list);
+        print("id; name; coordinates; creationDate; realHero; hasToothpick; impactSpeed; weaponType; mood; carName; carCool");
+        for (HumanBeing obj:list) {
+            print(obj.toString());
+        };
     }
 
     //add_if_max
     public void addIfMax() {
         HumanBeing person = creatingHuman(collection, scanner);
-        Vector<HumanBeing> vector = new Vector<>();
-        vector = collection;
-        Collections.sort(vector);
-        Vector<HumanBeing> vector2 = new Vector<>();
-        vector2.add(person);
-        vector2.add(vector.elementAt(vector.size() - 1));
-        Collections.sort(vector2);
-        if (vector2.elementAt(vector2.size() - 1) == person) {
-            collection.add(person);
-        }
+        if (!collection.isEmpty()) {
+            Vector<HumanBeing> vector = new Vector<>(collection);
+            Collections.sort(vector);
+            Vector<HumanBeing> vector2 = new Vector<>();
+            vector2.add(person);
+            vector2.add(vector.elementAt(vector.size() - 1));
+            Collections.sort(vector2);
+            if (vector2.elementAt(vector2.size() - 1) == person) {
+                collection.add(person);
+            } else {
+                print("Элемент не является максимальным, мы его не добавили");
+            }
+        }else{collection.add(person);}
     }
 
     //execute_script
-    public void executeScript(String file){
-        ArrayList<String> script = fileScanner(file);
-        for (String command: script){
-            String[] str = command.split(" ");
-            if (str[0].equals("execute_script")){
-                print("В файле есть команда, которая приводит к рекурсии, ее мы не выполним");
-            }
-            else if (str.length == 1) {
-                execute(str[0], "");
-            } else if (str.length == 2) {
-                execute(str[0], str[1]);
+    static Vector<String> filePaths = new Vector<>();
+    public void executeScript(String arg) {
+        ArrayList<String> listCommands = scan(arg);
+        filePaths.add(arg);
+        for (String command:listCommands) {
+            String[] st = command.split(" ");
+            if (st.length == 1) {
+                execute(st[0], "");
+            } else if (st.length == 2) {
+                if (st[0].equals("execute_script")) {
+                    if (filePaths.contains(st[1])) {
+                        print("Команда " + st[0] + " " + st[1] + " уже была выполнена, дальнейшее выполнение приведёт к рекурсии");
+                    } else {
+                        execute(st[0], st[1]);
+                    }
+                }
+                else {
+                    execute(st[0], st[1]);
+                }
             }
         }
+        filePaths.clear();
     }
 }
 

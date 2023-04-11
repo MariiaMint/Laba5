@@ -41,8 +41,10 @@ public class CsvToVector {
             else {t.setWeaponType(WeaponType.valueOf(st[7]));}
             if (st[8].equals("null")) {t.setMood(null);}
             else {t.setMood(Mood.valueOf(st[8]));}
-            t.setCar(new Car(st[9].split(",")[0], parseBoolean(st[9].split(",")[1])));
-
+            if (!(st[9].split(",")[0].equals("null"))) {
+                t.setCar(new Car(st[9].split(",")[0], parseBoolean(st[9].split(",")[1])));
+            }
+            else {t.setCar(new Car(null, parseBoolean(st[9].split(",")[1])));}
             collection.add(t);
         }
         scan.close();

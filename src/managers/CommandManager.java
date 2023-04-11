@@ -32,10 +32,9 @@ public class CommandManager {
     public static void execute(String name, String par){
         try {
             commands.get(name).execute(par);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             print("Данная команда не найдена");
         }
-
     }
 
     public static LinkedHashMap<String, Command> getCommands() {

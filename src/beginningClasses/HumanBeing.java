@@ -25,11 +25,19 @@ public class HumanBeing implements Comparable<HumanBeing>{
     public HumanBeing() {
     }
     public int compareTo(HumanBeing obj){
-        Vector<String> sp = new Vector<>();
-        sp.add(this.name);
-        sp.add(obj.name);
-        Collections.sort(sp);
-        return sp.indexOf(this.name) - sp.indexOf(obj.name);
+        return this.getName().compareToIgnoreCase(obj.getName());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isRealHero() {
+        return realHero;
+    }
+
+    public Car getCar() {
+        return car;
     }
 
     public void setCreationDate(LocalDateTime creationDate) {
@@ -83,13 +91,13 @@ public class HumanBeing implements Comparable<HumanBeing>{
     }
 
     public static void createCoordinates(HumanBeing person, Scanner scanner){
-        print("Теперь вводим координаты человека, сначала координата 'X' (должна быть больше -386 и не пустая строка), потом 'Y'(можно ввести любое число)");
+        print("Введите координату 'X' (число с плавающей запятой, должно быть больше -386)");
         Double x = etoDouble(false, scanner);
         while (x <= -386) {
             print("Kоордината Х должна быть > -386");
             x = etoDouble(false, scanner);
         }
-        print("Введите у(число)");
+        print("Введите координату 'Y'(любое число с плавающей запятой)");
         double y = etoDouble(false, scanner);
         Coordinates coordinates = new Coordinates(x, y);
         person.setCoordinates(coordinates);
@@ -159,14 +167,25 @@ public class HumanBeing implements Comparable<HumanBeing>{
         return  id + "; " +
                 name + "; " +
                 coordinates.toString() + "; " +
+                this.creationDateToString() + "; " +
+                realHero + "; " +
+                hasToothpick + "; " +
+                impactSpeed + "; " +
+                weaponType + "; " +
+                mood + "; " +
+                car.toString();}
+
+    public String toCSV() {
+        return  id + "; " +
+                name + "; " +
+                coordinates.toString() + "; " +
                 creationDate + "; " +
                 realHero + "; " +
                 hasToothpick + "; " +
                 impactSpeed + "; " +
                 weaponType + "; " +
                 mood + "; " +
-                car.toString() +
-                '\n';}
+                car.toString();}
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyyг HHч.mmмин.sс");
     public String creationDateToString() {

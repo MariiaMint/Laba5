@@ -1,0 +1,5 @@
+show 2
+print_field_descending_mood
+execute_script Scriptt.txt
+add
+show

@@ -20,8 +20,17 @@ public class Car {
         this.cool = cool;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public boolean isCool() {
+        return cool;
+    }
+
     @Override
     public String toString() {
         return name + "," + cool;
     }
+
 }
