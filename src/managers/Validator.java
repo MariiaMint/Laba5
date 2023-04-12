@@ -105,7 +105,7 @@ public class Validator {
                     id = parseInt(strId);
                     break;
                 } catch (NumberFormatException e) {
-                    print("id должен быть целым числом, введите его правильно");
+                    print("id должен быть целым числом(от 0 до 2147483647), введите его правильно");
                     strId = scanner.nextLine();
                 }
             }

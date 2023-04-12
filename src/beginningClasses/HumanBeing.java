@@ -185,7 +185,7 @@ public class HumanBeing implements Comparable<HumanBeing>{
                 impactSpeed + "; " +
                 weaponType + "; " +
                 mood + "; " +
-                car.toString();}
+                car.toString() + "\n";}
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyyг HHч.mmмин.sс");
     public String creationDateToString() {
