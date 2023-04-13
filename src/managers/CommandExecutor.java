@@ -59,7 +59,7 @@ public class CommandExecutor {
 
         } catch (IOException e) {
             print("");
-        }
+        }catch (NullPointerException e){print("команда сохранить не может быть выполнена, проверьте, что у файла есть необходимые права доступа");}
     }
 
     //SHOW

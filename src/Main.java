@@ -19,13 +19,21 @@ import static managers.Printer.print;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
-        String csvFile = args[0];
-        //String csvFile = "myfile.csv";
+        //String csvFile = args[0];
         Vector <HumanBeing> collection = new Vector<>();
         Scanner scanner = new Scanner(in);
+        String env = "CSV";
+        String csvFile = "";
+        try {
+            csvFile = System.getenv(env);
+        } catch (NullPointerException e) {
+            print("Переменная окружения CSV задана не корректно, задайте ее и запустите программу заново");
+            System.exit(0);
+        }
+
 
         //парсер csv в Vector
-        CsvToVector.csvToVector(csvFile,collection);
+        CsvToVector.csvToVector(csvFile,collection,scanner);
         CommandExecutor commandExecutor = new CommandExecutor(collection,csvFile, scanner);
         CommandManager commandManager = new CommandManager(commandExecutor);
         while (true) {
