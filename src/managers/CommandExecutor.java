@@ -1,10 +1,14 @@
 package managers;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Vector;
 import beginningClasses.*;
 import comands.Command;
 import static beginningClasses.HumanBeing.*;
+import static java.lang.Boolean.parseBoolean;
+import static java.lang.Double.parseDouble;
+import static java.lang.System.in;
 import static managers.CommandManager.execute;
 import static managers.FileScanner.scan;
 import static managers.Printer.print;
@@ -40,10 +44,10 @@ public class CommandExecutor {
 
     //ADD
     public void add() {
-
         HumanBeing human = creatingHuman(collection, scanner);
         collection.add(human);
     }
+
 
     //SAVE
     public void save() {
@@ -57,9 +61,9 @@ public class CommandExecutor {
             fw.write(sb.toString());
             fw.close();
 
-        } catch (IOException e) {
-            print("");
-        }catch (NullPointerException e){print("команда сохранить не может быть выполнена, проверьте, что у файла есть необходимые права доступа");}
+        } catch (IOException | NullPointerException e) {
+            print("команда сохранить не может быть выполнена, проверьте, что у файла есть необходимые права доступа");
+        }
     }
 
     //SHOW
@@ -165,11 +169,11 @@ public class CommandExecutor {
                 List<String> pars = Arrays.asList("name", "coordinates", "realHero", "hasToothpick", "impactSpeed", "weaponType", "mood", "car");
                 String par = "";
                 while (!par.equals("stop")) {
-                    print("выберите что из перечисленного вы хотите изменить(вводите по одному слову параметр)" + pars.toString());
+                    print("выберите что из перечисленного вы хотите изменить(вводите по одному слову параметр)" + pars);
                     print("чтобы закончить изменение введите 'stop'");
                     par = scanner.nextLine();
                     while (!(pars.contains(par)) && !par.equals("stop")) {
-                        print("выберите что из перечисленного вы хотите изменить(вводите по одному слову параметр)" + pars.toString());
+                        print("выберите что из перечисленного вы хотите изменить(вводите по одному слову параметр)" + pars);
                         par = scanner.nextLine();
                     }
                     switch (par) {
@@ -231,7 +235,7 @@ public class CommandExecutor {
         print("id; name; coordinates; creationDate; realHero; hasToothpick; impactSpeed; weaponType; mood; carName; carCool");
         for (HumanBeing obj:list) {
             print(obj.toString());
-        };
+        }
     }
 
     //add_if_max
@@ -257,24 +261,117 @@ public class CommandExecutor {
     public void executeScript(String arg) {
         ArrayList<String> listCommands = scan(arg);
         filePaths.add(arg);
+        int m = -1;
+        int i = -1;
         for (String command:listCommands) {
+            m++;
             String[] st = command.split(" ");
-            if (st.length == 1) {
-                execute(st[0], "");
-            } else if (st.length == 2) {
-                if (st[0].equals("execute_script")) {
-                    if (filePaths.contains(st[1])) {
-                        print("Команда " + st[0] + " " + st[1] + " уже была выполнена, дальнейшее выполнение приведёт к рекурсии");
+            if (i > -1 && m-i<11){continue;}
+            if (st[0].equals("add")) {
+                i = m;
+                try {
+                    HumanBeing human = humanForScript(listCommands, i);
+                    collection.add(human);
+                    print(human.getName() + " добавлен");
+                }catch (NumberFormatException e){print("В файле есть некорректные данные");break;}
+            }
+            else if (st[0].equals("add_if_max")){
+                i = m;
+                HumanBeing human = new HumanBeing();
+                try {
+                    human = humanForScript(listCommands, i);
+                }catch (NumberFormatException e){print("В файле есть некорректные данные");break;}
+                if (!collection.isEmpty()) {
+                    Vector<HumanBeing> vector = new Vector<>(collection);
+                    Collections.sort(vector);
+                    Vector<HumanBeing> vector2 = new Vector<>();
+                    vector2.add(human);
+                    vector2.add(vector.elementAt(vector.size() - 1));
+                    Collections.sort(vector2);
+                    if (vector2.elementAt(vector2.size() - 1) == human) {
+                        collection.add(human);
+                    } else {
+                        print("Элемент не является максимальным, мы его не добавили");
+                    }
+                }else{collection.add(human);}
+            }
+            else if (st[0].equals("update_by_id")){
+                i = m;
+                if (st.length == 2 && st[1].chars().allMatch(Character::isDigit)) {
+                    HumanBeing human = new HumanBeing();
+                    try {
+                        human = humanForScript(listCommands, i);
+                    }catch (NumberFormatException e){print("В файле есть некорректные данные");break;}
+                    removeBId(st[1]);
+                    human.setId(Integer.valueOf(st[1]));
+                    collection.add(human);
+                }else {print("В файле есть ошибка, исправьте ее");break;}
+            }
+            else if (st[0].equals("remove_by_id")) {
+                if (st.length == 2 && st[1].chars().allMatch(Character::isDigit)) {
+                    removeBId(st[1]);
+                }else {print("В файле есть ошибка, исправьте ее");break;}
+            }
+            else {
+                if (st.length == 1) {
+                    execute(st[0], "");
+                } else if (st.length == 2) {
+                    if (st[0].equals("execute_script")) {
+                        if (filePaths.contains(st[1])) {
+                            print("Команда " + st[0] + " " + st[1] + " уже была выполнена, дальнейшее выполнение приведёт к рекурсии");
+                        } else {
+                            execute(st[0], st[1]);
+                        }
                     } else {
                         execute(st[0], st[1]);
                     }
                 }
-                else {
-                    execute(st[0], st[1]);
+            }
+            filePaths.clear();
+        }
+    }
+    private HumanBeing humanForScript(ArrayList<String> listCommands, int i) throws NumberFormatException{
+        HumanBeing human = new HumanBeing();
+        try {
+            int id=0;
+            if(!collection.isEmpty()) {
+                for (HumanBeing smn : collection) {
+                    id = Integer.max(id, smn.getId() + 1);
                 }
             }
+            human.setId(id);
+            human.setCreationDate(LocalDateTime.now());
+           if (listCommands.get(i + 1).chars().allMatch(Character::isLetter)) {
+               human.setName(listCommands.get(i + 1));
+           }
+           else {throw new NumberFormatException();}
+            human.setCoordinates(new Coordinates(parseDouble(listCommands.get(i + 2).replace(",", ".")), parseDouble(listCommands.get(i + 3).replace(",", "."))));
+            human.setRealHero(parseBoolean(listCommands.get(i+4)));
+            human.setHasToothpick(parseBoolean(listCommands.get(i+5)));
+            if (listCommands.get(i+6).equals("null")) {
+                human.setImpactSpeed(null);
+            } else {
+                human.setImpactSpeed(parseDouble(listCommands.get(i+6).replace(",", ".")));
+            }
+            if (listCommands.get(i+7).equals("null")) {
+                human.setWeaponType(null);
+            } else {
+                human.setWeaponType(WeaponType.valueOf(listCommands.get(i+7)));
+            }
+            if (listCommands.get(i+8).equals("null")) {
+                human.setMood(null);
+            } else {
+                human.setMood(Mood.valueOf(listCommands.get(i+8)));
+            }
+            if (!(listCommands.get(i+9).equals("null")) && listCommands.get(i + 9).chars().allMatch(Character::isLetter)) {
+                human.setCar(new Car(listCommands.get(i+9), parseBoolean(listCommands.get(i+10))));
+            } else if (listCommands.get(i+9).equals("null")){
+                human.setCar(new Car(null, parseBoolean(listCommands.get(i+10))));
+            }else {throw new NumberFormatException();}
+        } catch (IndexOutOfBoundsException | NumberFormatException | NullPointerException e) {
+            throw new NumberFormatException();
         }
-        filePaths.clear();
+        return human;
     }
 }
 

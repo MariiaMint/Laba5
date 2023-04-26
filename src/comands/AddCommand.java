@@ -1,5 +1,6 @@
 package comands;
 
+import beginningClasses.HumanBeing;
 import managers.CommandExecutor;
 
 public class AddCommand implements  Command{
@@ -12,7 +13,6 @@ public class AddCommand implements  Command{
         this.name = name;
     }
 
-    @Override
     public void execute(String par) {
         commandExecutor.add();
     }

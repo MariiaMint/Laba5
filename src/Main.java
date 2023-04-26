@@ -37,9 +37,9 @@ public class Main {
         CommandExecutor commandExecutor = new CommandExecutor(collection,csvFile, scanner);
         CommandManager commandManager = new CommandManager(commandExecutor);
         while (true) {
-            print("Введите команду (чтобы увидеть справку по командам введите help)");
-            String command = scanner.nextLine();
             try {
+                print("Введите команду (чтобы увидеть справку по командам введите help)");
+                String command = scanner.nextLine();
                 String[] command_list = command.split(" ");
                 if (command_list.length == 1) {
                     commandManager.execute(command_list[0], "");

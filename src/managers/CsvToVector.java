@@ -7,10 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
-import java.util.Vector;
-import java.util.Scanner;
+import java.util.*;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.Double.parseDouble;
@@ -25,7 +22,8 @@ public class CsvToVector {
         try {
             fr = new FileReader(csvFile);
         } catch (FileNotFoundException e) {
-            print("Файл не найден, проверьте права доступа или путь к файлу");;
+            print("Файл не найден, проверьте права доступа или путь к файлу и запустите программу заново");
+            System.exit(0);
         }catch (NullPointerException e){print("Переменная окружения CSV задана не корректно, задайте ее и запустите программу заново");
             System.exit(0);
         }
@@ -35,7 +33,7 @@ public class CsvToVector {
         }catch (NullPointerException e){print("Переменная окружения CSV задана не корректно, задайте ее и запустите программу заново");
         System.exit(0);}
 
-        ArrayList<Integer> ids = new ArrayList<>();
+        Set<Integer> ids = new HashSet<>();
         while (scan.hasNextLine()) {
             String[] st = scan.nextLine().split("; ");
             try {

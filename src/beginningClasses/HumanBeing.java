@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static java.lang.Math.max;
 import static java.lang.System.in;
 import static managers.Printer.print;
 import static managers.Validator.*;
@@ -115,10 +116,13 @@ public class HumanBeing implements Comparable<HumanBeing>{
         person.setCar(car);}
     public static HumanBeing creatingHuman(Vector<HumanBeing> collection, Scanner scanner) {
         int id;
-        if (collection.size() == 0) {
+        if (collection.isEmpty()) {
             id = 0;
         } else {
-            id = collection.lastElement().getId() + 1;
+            id = 0;
+            for (HumanBeing human:collection) {
+                id = max(id,human.getId()+1);
+            }
         }
 
         HumanBeing person = new HumanBeing();
