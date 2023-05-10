@@ -6,15 +6,20 @@ import java.util.Comparator;
 
 public class HumanComparator implements Comparator<HumanBeing> {
     Comparator<HumanBeing> realHeroComparator = Comparator.comparing(HumanBeing::isRealHero);
-    Comparator<HumanBeing> impactSpeedComparator = Comparator.comparing(
-            HumanBeing::getImpactSpeed,
-            Comparator.nullsFirst(Comparator.naturalOrder())
+    Comparator<HumanBeing> coordinateXComparator = Comparator.comparing(
+            HumanBeing::getCoordinateX
     );
-    HumansCarComparator humansCarComparator = new HumansCarComparator();
-    public int compare(HumanBeing o1, HumanBeing o2){
+    Comparator<HumanBeing> coordinateYComparator = Comparator.comparing(
+            HumanBeing::getCoordinateY
+    );
+    Comparator<HumanBeing> carCoolComparator = Comparator.comparing(
+    human -> human.getCar().isCool()
+        );
+     public int compare(HumanBeing o1, HumanBeing o2){
     return realHeroComparator
-            .thenComparing(impactSpeedComparator)
-            .thenComparing(humansCarComparator)
+           .thenComparing(coordinateXComparator)
+            .thenComparing(coordinateYComparator)
+            .thenComparing(carCoolComparator)
             .compare(o2,o1);
     }
 }

@@ -231,7 +231,6 @@ public class CommandExecutor {
     public void printDescending(){
         ArrayList<HumanBeing> list = new ArrayList<>(collection);
         list.sort(new HumanComparator());
-        Collections.reverse(list);
         print("id; name; coordinates; creationDate; realHero; hasToothpick; impactSpeed; weaponType; mood; carName; carCool");
         for (HumanBeing obj:list) {
             print(obj.toString());
@@ -240,15 +239,16 @@ public class CommandExecutor {
 
     //add_if_max
     public void addIfMax() {
+        print("сравнение идет пунктам realHero, coordinate X, Y, carCool");
         HumanBeing person = creatingHuman(collection, scanner);
         if (!collection.isEmpty()) {
             Vector<HumanBeing> vector = new Vector<>(collection);
-            Collections.sort(vector);
+            Collections.sort(vector, new HumanComparator());
             Vector<HumanBeing> vector2 = new Vector<>();
             vector2.add(person);
-            vector2.add(vector.elementAt(vector.size() - 1));
-            Collections.sort(vector2);
-            if (vector2.elementAt(vector2.size() - 1) == person) {
+            vector2.add(vector.elementAt(0));
+            Collections.sort(vector2, new HumanComparator());
+            if (vector2.elementAt(0) == person) {
                 collection.add(person);
             } else {
                 print("Элемент не является максимальным, мы его не добавили");
@@ -261,6 +261,7 @@ public class CommandExecutor {
     public void executeScript(String arg) {
         ArrayList<String> listCommands = scan(arg);
         filePaths.add(arg);
+        System.out.println(filePaths);
         int m = -1;
         int i = -1;
         for (String command:listCommands) {
@@ -327,8 +328,8 @@ public class CommandExecutor {
                     }
                 }
             }
-            filePaths.clear();
         }
+        filePaths.clear();
     }
     private HumanBeing humanForScript(ArrayList<String> listCommands, int i) throws NumberFormatException{
         HumanBeing human = new HumanBeing();

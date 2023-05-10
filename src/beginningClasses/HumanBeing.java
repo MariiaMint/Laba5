@@ -1,13 +1,10 @@
 package beginningClasses;
 
-import managers.Validator;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.lang.Math.max;
-import static java.lang.System.in;
 import static managers.Printer.print;
 import static managers.Validator.*;
 
@@ -89,6 +86,13 @@ public class HumanBeing implements Comparable<HumanBeing>{
 
     public Double getImpactSpeed() {
         return impactSpeed;
+    }
+
+    public Double getCoordinateX() {
+        return coordinates.getX();
+    }
+    public Double getCoordinateY() {
+        return coordinates.getY();
     }
 
     public static void createCoordinates(HumanBeing person, Scanner scanner){

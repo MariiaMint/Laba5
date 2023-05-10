@@ -39,7 +39,7 @@ public class CsvToVector {
             try {
                 HumanBeing t = new HumanBeing();
                 t.setId(parseInt(st[0]));
-                if (ids.contains(parseInt(st[0]))){
+                if (ids.contains(parseInt(st[0])) || parseInt(st[0]) < 0){
                     throw new NumberFormatException();
                 }else {ids.add(parseInt(st[0]));}
                 t.setName(st[1]);

@@ -1,9 +1,9 @@
 show 2
 print_field_descending_mood
-execute_script Scriptt.txt
+execute_script script2.txt
 add
 Diusha
-45.25
+45000.25
 55,03
 true
 false
